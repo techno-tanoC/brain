@@ -6,7 +6,7 @@ import Data.IORef
 import Data.Array.IO
 import Control.Applicative
 
-data Command = PInc | PDec | VInc | VDec | POut | PInp | LBgn | LEnd
+data Command = PInc | PDec | VInc | VDec | POut | PInp
 instance Show Command where
   show PInc = ">"
   show PDec = "<"
@@ -14,6 +14,9 @@ instance Show Command where
   show VDec = "-"
   show POut = "."
   show PInp = ","
+
+data Ctrl = LBgn | LEnd
+instance Show Ctrl where
   show LBgn = "["
   show LEnd = "]"
 
@@ -33,12 +36,12 @@ newMemory = newArray (0, 10000) 0
 printMem :: Memory -> IO ()
 printMem m = getElems m >>= print . map show
 
-data Computer = Computer {
+data Machine = Machine {
   p :: Pointer
 , mem :: Memory
 }
 
 data Program = Program [Exp] deriving Show
 
-newComputer :: IO Computer
-newComputer = Computer <$> newPointer <*> newMemory
+newMachine :: IO Machine
+newMachine = Machine <$> newPointer <*> newMemory

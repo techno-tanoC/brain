@@ -19,12 +19,14 @@ loop = lbgn *> (Loop <$> many field) <* lend
 comm :: Parser Exp
 comm = Exp <$> (pinc <|> pdec <|> vinc <|> vdec <|> pout <|> pinp)
 
-pinc, pdec, vinc, vdec, pout, pinp, lbgn, lend :: Parser Command
+pinc, pdec, vinc, vdec, pout, pinp :: Parser Command
 pinc = char '>' >> return PInc
 pdec = char '<' >> return PDec
 vinc = char '+' >> return VInc
 vdec = char '-' >> return VDec
 pout = char '.' >> return POut
 pinp = char ',' >> return PInp
+
+lbgn, lend :: Parser Ctrl
 lbgn = char '[' >> return LBgn
 lend = char ']' >> return LEnd
