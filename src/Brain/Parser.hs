@@ -11,13 +11,13 @@ brainfuck :: Parser Program
 brainfuck = Program <$> many field
 
 field :: Parser Exp
-field = try comm <|> try loop
+field = comm <|> loop
 
 loop :: Parser Exp
 loop = lbgn *> (Loop <$> many field) <* lend
 
 comm :: Parser Exp
-comm = fmap Exp . foldl1 (<|>) . map try $ [pinc, pdec, vinc, vdec, pout, pinp]
+comm = fmap Exp . choice $ [pinc, pdec, vinc, vdec, pout, pinp]
 
 pinc, pdec, vinc, vdec, pout, pinp :: Parser Command
 pinc = char '>' >> return PInc
