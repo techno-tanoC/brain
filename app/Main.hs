@@ -1,16 +1,17 @@
 module Main where
 
-import Brain
 import Control.Monad
 
+import Brain
+
 helloworld = "+++++++++[>++++++++>+++++++++++>+++++<<<-]>.>++.+++++++..+++.>-.------------.<++++++++.--------.+++.------.--------.>+."
-zero = "++++++++++++++++++++++++++++++++++++++++++++++++."
+zero = "++++[>++++++++++++<-]>."
 
 fizzbuzz = "++++++[->++++>>+>+>-<<<<<]>[<++++>>+++>++++>>+++>+++++>+++++>>>>>>++>>++<<<<<<<<<<<<<<-]<++++>+++>-->+++>->>--->++>>>+++++[->++>++<<]<<<<<<<<<<[->-[>>>>>>>]>[<+++>.>.>>>>..>>>+<]<<<<<-[>>>>]>[<+++++>.>.>..>>>+<]>>>>+<-[<<<]<[[-<<+>>]>>>+>+<<<<<<[->>+>+>-<<<<]<]>>[[-]<]>[>>>[>.<<.<<<]<[.<<<<]>]>.<<<<<<<<<<<]"
 
 main :: IO ()
 main = do
-  let Right es = parse brainfuck "" fizzbuzz
-  -- let Right es = parse brainfuck "" helloworld
-  c <- newComputer
-  eval c es
+  hanoi <- readFile "/home/tech/haskell/brain/app/hanoi.bf"
+  let Right es = parse brainfuck "" hanoi
+      m = newMachine :: Machine Int
+  eval m es

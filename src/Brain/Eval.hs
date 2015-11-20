@@ -3,36 +3,32 @@ module Brain.Eval where
 import Data.Char
 import Data.IORef
 import Data.Array.IO
+import Data.Foldable
 import Control.Monad
 
 import Brain.Type
+import Brain.Machine
 
-eval :: Machine -> Program -> IO ()
-eval c (Program es) = do
-  evalMap c es
+eval :: (Num a, Enum a, Integral a, Read a) => Machine a -> Program -> IO ()
+eval m (Program prog) = do
+  evalMap m prog
   putStrLn ""
 
-evalExp :: Machine -> Exp -> IO ()
-evalExp (Machine p m) (Exp PInc) = modifyIORef p succ
-evalExp (Machine p m) (Exp PDec) = modifyIORef p pred
-evalExp (Machine p m) (Exp VInc) = readIORef p >>= modifyArray succ m
-evalExp (Machine p m) (Exp VDec) = readIORef p >>= modifyArray pred m
-evalExp (Machine p m) (Exp POut) = readIORef p >>= readArray m >>= putChar . chr
-evalExp (Machine p m) (Exp PInp) = do
-  pointer <- readIORef p
-  input <- (readLn :: IO Int)
-  writeArray m pointer input
-evalExp c@(Machine p m) l@(Loop es) = do
-  pointer <- readIORef p
-  v <- readArray m pointer
-  if v == 0
-  then return ()
-  else do { evalMap c es; evalExp c l }
+evalExp :: (Num a, Enum a, Integral a, Read a) => Machine a -> Exp -> IO (Machine a)
+evalExp m@(Machine b v a) exp =
+  case exp of
+    Exp PInc -> return . incPoint $ m
+    Exp PDec -> return . decPoint $ m
+    Exp VInc -> return . incValue $ m
+    Exp VDec -> return . decValue $ m
+    Exp POut -> (putChar . chr . fromIntegral $ v) >> return m
+    Exp PInp -> do
+      inp <- readLn
+      return $ Machine b inp a
+    l@(Loop es) ->
+      if v == 0
+      then return m
+      else evalMap m es >>= flip evalExp l
 
-evalMap :: Machine -> [Exp] -> IO ()
-evalMap c es = mapM_ (evalExp c) es
-
-modifyArray :: (MArray a e m, Ix i) => (e -> e) -> a i e -> i -> m ()
-modifyArray f arr i = do
-  v <- readArray arr i
-  writeArray arr i (f v)
+evalMap :: (Num a, Enum a, Integral a, Read a) => Machine a -> [Exp] -> IO (Machine a)
+evalMap m es = foldlM evalExp m es
