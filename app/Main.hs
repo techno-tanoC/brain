@@ -11,7 +11,6 @@ fizzbuzz = "++++++[->++++>>+>+>-<<<<<]>[<++++>>+++>++++>>+++>+++++>+++++>>>>>>++
 
 main :: IO ()
 main = do
-  hanoi <- readFile "/home/tech/haskell/brain/app/hanoi.bf"
-  let Right es = parse brainfuck "" hanoi
+  let Right es = parse brainfuck "" fizzbuzz
       m = newMachine :: Machine Int
   eval m es
