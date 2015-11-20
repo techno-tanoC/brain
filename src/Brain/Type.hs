@@ -25,6 +25,8 @@ instance Show Exp where
   show (Exp t) = show t
   show (Loop es) = "[" ++ concatMap show es ++ "]"
 
+data Program = Program [Exp] deriving Show
+
 type Pointer = IORef Int
 newPointer :: IO Pointer
 newPointer = newIORef 0
@@ -40,8 +42,6 @@ data Machine = Machine {
   p :: Pointer
 , mem :: Memory
 }
-
-data Program = Program [Exp] deriving Show
 
 newMachine :: IO Machine
 newMachine = Machine <$> newPointer <*> newMemory
