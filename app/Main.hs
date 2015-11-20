@@ -11,6 +11,5 @@ fizzbuzz = "++++++[->++++>>+>+>-<<<<<]>[<++++>>+++>++++>>+++>+++++>+++++>>>>>>++
 main :: IO ()
 main = do
   let Right es = parse brainfuck "" fizzbuzz
-  -- let Right es = parse brainfuck "" helloworld
-  c <- newComputer
+  c <- newMachine
   eval c es
